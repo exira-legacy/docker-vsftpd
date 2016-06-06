@@ -29,6 +29,12 @@ RUN \
     mkdir -p /conf/vsftpd && \
     chown -R ftp:ftp /home/vsftpd && \
 
+    # add www-data user
+    mkdir -p /home/www-data && \
+    addgroup -g 433 -S www-data && \
+    adduser -u 431 -S -D -G www-data -h /home/www-data -s /sbin/nologin www-data && \
+    chown -R www-data:www-data /home/www-data && \
+
     # remove dev dependencies
     apk del ${build_pkgs} && \
 
