@@ -9,14 +9,28 @@ ENV VSFTPD_ALPINE_VERSION=3.0.3-r1 \
 
 RUN \
     # Install build and runtime packages
+    build_pkgs="build-base curl linux-pam-dev tar" && \
+    runtime_pkgs="bash" && \
     apk update && \
     apk upgrade && \
-    apk --update --no-cache add vsftpd="${VSFTPD_ALPINE_VERSION}" db db-utils bash && \
+    apk --update --no-cache add vsftpd="${VSFTPD_ALPINE_VERSION}" ${build_pkgs} ${runtime_pkgs} && \
 
+    # get us pam_pwdfile
+    mkdir pam_pwdfile && \
+    cd pam_pwdfile && \
+    curl -sSL https://github.com/tiwe-de/libpam-pwdfile/archive/v1.0.tar.gz | tar xz --strip 1 && \
+    make install && \
+    cd .. && \
+    rm -rf pam_pwdfile && \
+
+    # setup some structure
     mkdir -p /var/run/vsftpd/empty && \
     mkdir -p /home/vsftpd && \
     mkdir -p /conf/vsftpd && \
     chown -R ftp:ftp /home/vsftpd && \
+
+    # remove dev dependencies
+    apk del ${build_pkgs} && \
 
     # other clean up
     rm -rf /var/cache/apk/* && \
@@ -26,16 +40,13 @@ RUN \
 COPY vsftpd.conf /etc/vsftpd/
 COPY vsftpd_virtual /etc/pam.d/
 COPY run-vsftpd /usr/sbin/
-COPY virtual-user /usr/sbin/
 
 RUN chmod +x /usr/sbin/run-vsftpd && \
-    chmod +x /usr/sbin/virtual-user && \
 
     # Get decent Linux line endings
     dos2unix /etc/vsftpd/vsftpd.conf && \
     dos2unix /etc/pam.d/vsftpd_virtual && \
-    dos2unix /usr/sbin/run-vsftpd && \
-    dos2unix /usr/sbin/virtual-user
+    dos2unix /usr/sbin/run-vsftpd
 
 VOLUME /conf/vsftpd
 VOLUME /home/vsftpd
