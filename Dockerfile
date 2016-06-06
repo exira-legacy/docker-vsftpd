@@ -10,7 +10,7 @@ ENV VSFTPD_ALPINE_VERSION=3.0.3-r1 \
 RUN \
     # Install build and runtime packages
     build_pkgs="build-base curl linux-pam-dev tar" && \
-    runtime_pkgs="bash" && \
+    runtime_pkgs="bash ca-certificates openssl" && \
     apk update && \
     apk upgrade && \
     apk --update --no-cache add vsftpd="${VSFTPD_ALPINE_VERSION}" ${build_pkgs} ${runtime_pkgs} && \

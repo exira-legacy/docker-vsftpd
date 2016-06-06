@@ -22,6 +22,7 @@ if [ -f "/conf/vsftpd/virtual_users" ]; then
     echo "=> virtual_users has been created before, skipping ..."
 else
     echo "${FTP_USER}:$(openssl passwd -1 ${FTP_PASS})" > /conf/vsftpd/virtual_users
+    chmod 600 /conf/vsftpd/virtual_users
 fi
 
 # Get log file path
