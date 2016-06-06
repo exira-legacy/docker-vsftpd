@@ -18,9 +18,9 @@ else
 fi
 
 # Create home dir and update vsftpd user db:
-mkdir -p "/home/vsftpd/${FTP_USER}"
-virtual-user -d "${FTP_USER}" "${FTP_PASS}"
-chmod 600 /conf/vsftpd/virtual_users.db
+#mkdir -p "/home/vsftpd/${FTP_USER}"
+#virtual-user -d "${FTP_USER}" "${FTP_PASS}"
+#chmod 600 /conf/vsftpd/virtual_users.db
 
 # Get log file path
 export LOG_FILE=`grep xferlog_file /etc/vsftpd/vsftpd.conf|cut -d= -f2`
